@@ -19,7 +19,8 @@ module OutOfOffisable
   end
 
   def weekly_schedule
-    working_hours.order(day_of_week: :asc).select(*OFFISABLE_ATTRS).as_json(except: :id)
+    wh = working_hours.loaded? ? working_hours.sort_by(&:day_of_week) : working_hours.order(day_of_week: :asc)
+    wh.map { |h| h.as_json(only: OFFISABLE_ATTRS) }
   end
 
   # accepts an array of hashes similiar to the format of weekly_schedule

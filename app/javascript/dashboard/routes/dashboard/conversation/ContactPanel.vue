@@ -130,10 +130,7 @@ onMounted(() => {
                 :title="
                   $t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_ACTIONS')
                 "
-                :is-open="isContactSidebarItemOpen('is_conv_actions_open')"
-                @toggle="
-                  value => toggleSidebarUIState('is_conv_actions_open', value)
-                "
+                :is-open="true"
               >
                 <ConversationAction
                   :conversation-id="conversationId"
@@ -144,11 +141,8 @@ onMounted(() => {
             <div v-else-if="element.name === 'conversation_info'">
               <AccordionItem
                 :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_INFO')"
-                :is-open="isContactSidebarItemOpen('is_conv_details_open')"
+                :is-open="true"
                 compact
-                @toggle="
-                  value => toggleSidebarUIState('is_conv_details_open', value)
-                "
               >
                 <ConversationInfo
                   :conversation-attributes="conversationAdditionalAttributes"

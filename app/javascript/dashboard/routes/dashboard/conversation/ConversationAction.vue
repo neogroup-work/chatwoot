@@ -237,43 +237,6 @@ export default {
         @select="onClickAssignAgent"
       />
     </div>
-    <div class="multiselect-wrap--small">
-      <ContactDetailsItem
-        compact
-        :title="$t('CONVERSATION_SIDEBAR.TEAM_LABEL')"
-      />
-      <MultiselectDropdown
-        :options="teamsList"
-        :selected-item="assignedTeam"
-        :multiselector-title="$t('AGENT_MGMT.MULTI_SELECTOR.TITLE.TEAM')"
-        :multiselector-placeholder="$t('AGENT_MGMT.MULTI_SELECTOR.PLACEHOLDER')"
-        :no-search-result="
-          $t('AGENT_MGMT.MULTI_SELECTOR.SEARCH.NO_RESULTS.TEAM')
-        "
-        :input-placeholder="
-          $t('AGENT_MGMT.MULTI_SELECTOR.SEARCH.PLACEHOLDER.TEAM')
-        "
-        @select="onClickAssignTeam"
-      />
-    </div>
-    <div class="multiselect-wrap--small">
-      <ContactDetailsItem compact :title="$t('CONVERSATION.PRIORITY.TITLE')" />
-      <MultiselectDropdown
-        :options="priorityOptions"
-        :selected-item="assignedPriority"
-        :multiselector-title="$t('CONVERSATION.PRIORITY.TITLE')"
-        :multiselector-placeholder="
-          $t('CONVERSATION.PRIORITY.CHANGE_PRIORITY.SELECT_PLACEHOLDER')
-        "
-        :no-search-result="
-          $t('CONVERSATION.PRIORITY.CHANGE_PRIORITY.NO_RESULTS')
-        "
-        :input-placeholder="
-          $t('CONVERSATION.PRIORITY.CHANGE_PRIORITY.INPUT_PLACEHOLDER')
-        "
-        @select="onClickAssignPriority"
-      />
-    </div>
     <ContactDetailsItem
       compact
       :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_LABELS')"

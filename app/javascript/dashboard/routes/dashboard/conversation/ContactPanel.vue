@@ -10,11 +10,9 @@ import { useUISettings } from 'dashboard/composables/useUISettings';
 import AccordionItem from 'dashboard/components/Accordion/AccordionItem.vue';
 import ContactConversations from './ContactConversations.vue';
 import ConversationAction from './ConversationAction.vue';
-import ConversationParticipant from './ConversationParticipant.vue';
 
 import ContactInfo from './contact/ContactInfo.vue';
 import ConversationInfo from './ConversationInfo.vue';
-import CustomAttributes from './customAttributes/CustomAttributes.vue';
 import Draggable from 'vuedraggable';
 import MacrosList from './Macros/List.vue';
 import ShopifyOrdersList from '../../../components/widgets/conversation/ShopifyOrdersList.vue';
@@ -143,24 +141,6 @@ onMounted(() => {
                 />
               </AccordionItem>
             </div>
-            <div
-              v-else-if="element.name === 'conversation_participants'"
-              class="conversation--actions"
-            >
-              <AccordionItem
-                :title="$t('CONVERSATION_PARTICIPANTS.SIDEBAR_TITLE')"
-                :is-open="isContactSidebarItemOpen('is_conv_participants_open')"
-                @toggle="
-                  value =>
-                    toggleSidebarUIState('is_conv_participants_open', value)
-                "
-              >
-                <ConversationParticipant
-                  :conversation-id="conversationId"
-                  :inbox-id="inboxId"
-                />
-              </AccordionItem>
-            </div>
             <div v-else-if="element.name === 'conversation_info'">
               <AccordionItem
                 :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_INFO')"
@@ -173,46 +153,6 @@ onMounted(() => {
                 <ConversationInfo
                   :conversation-attributes="conversationAdditionalAttributes"
                   :contact-attributes="contactAdditionalAttributes"
-                />
-              </AccordionItem>
-            </div>
-            <div v-else-if="element.name === 'contact_attributes'">
-              <AccordionItem
-                :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONTACT_ATTRIBUTES')"
-                :is-open="
-                  isContactSidebarItemOpen('is_contact_attributes_open')
-                "
-                compact
-                @toggle="
-                  value =>
-                    toggleSidebarUIState('is_contact_attributes_open', value)
-                "
-              >
-                <CustomAttributes
-                  attribute-type="contact_attribute"
-                  attribute-from="conversation_contact_panel"
-                  :contact-id="contact.id"
-                  :empty-state-message="
-                    $t('CONVERSATION_CUSTOM_ATTRIBUTES.NO_RECORDS_FOUND')
-                  "
-                />
-              </AccordionItem>
-            </div>
-            <div v-else-if="element.name === 'previous_conversation'">
-              <AccordionItem
-                v-if="contact.id"
-                :title="
-                  $t('CONVERSATION_SIDEBAR.ACCORDION.PREVIOUS_CONVERSATION')
-                "
-                :is-open="isContactSidebarItemOpen('is_previous_conv_open')"
-                compact
-                @toggle="
-                  value => toggleSidebarUIState('is_previous_conv_open', value)
-                "
-              >
-                <ContactConversations
-                  :contact-id="contact.id"
-                  :conversation-id="conversationId"
                 />
               </AccordionItem>
             </div>

@@ -38,6 +38,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    conversationStatus: {
+      type: String,
+      default: '',
+    },
   },
   emits: ['panelClose'],
   setup() {
@@ -178,7 +182,7 @@ export default {
 <template>
   <div class="relative items-center w-full p-4">
     <div class="flex flex-col w-full gap-2 text-left rtl:text-right">
-      <div class="flex flex-row justify-between">
+      <div class="flex flex-row justify-between items-center">
         <Thumbnail
           v-if="showAvatar"
           :src="contact.thumbnail"
@@ -186,6 +190,18 @@ export default {
           :username="contact.name"
           :status="contact.availability_status"
         />
+        <span
+          v-if="conversationStatus"
+          class="inline-flex items-center px-1.5 py-0.5 rounded text-xxs font-medium flex-shrink-0"
+          :class="{
+            'bg-n-teal-3 text-n-teal-11': conversationStatus === 'open',
+            'bg-n-slate-3 text-n-slate-11': conversationStatus === 'resolved',
+            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': conversationStatus === 'pending',
+            'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300': conversationStatus === 'snoozed',
+          }"
+        >
+          {{ $t(`CHAT_LIST.CHAT_STATUS_FILTER_ITEMS.${conversationStatus}.TEXT`) }}
+        </span>
       </div>
 
       <div class="flex flex-col items-start gap-1.5 min-w-0 w-full">

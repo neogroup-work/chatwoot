@@ -107,6 +107,7 @@ onMounted(() => {
     <ContactInfo
       :contact="contact"
       :channel-type="channelType"
+      :conversation-status="currentChat.status"
       @toggle-panel="onPanelToggle"
     />
     <div class="list-group pb-8">

@@ -298,10 +298,16 @@ export default {
         </div>
       </div>
       <h4
-        class="conversation--user text-sm my-0 mx-2 capitalize pt-0.5 text-ellipsis overflow-hidden whitespace-nowrap w-[calc(100%-70px)] text-n-slate-12"
+        class="conversation--user text-sm my-0 mx-2 pt-0.5 w-[calc(100%-70px)] text-n-slate-12 flex items-center gap-1.5 min-w-0"
         :class="hasUnread ? 'font-semibold' : 'font-medium'"
       >
-        {{ currentContact.name }}
+        <span class="capitalize truncate">{{ currentContact.name }}</span>
+        <span
+          v-if="currentContact.phone_number"
+          class="text-n-slate-10 font-normal text-xs flex-shrink-0"
+        >
+          {{ currentContact.phone_number }}
+        </span>
       </h4>
       <MessagePreview
         v-if="lastMessageInChat"

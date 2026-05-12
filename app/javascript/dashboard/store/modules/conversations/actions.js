@@ -360,10 +360,21 @@ const actions = {
     }
   },
 
-  updateConversation({ commit, dispatch }, conversation) {
+  updateConversation({ commit, dispatch, state, rootState }, conversation) {
     const {
       meta: { sender },
     } = conversation;
+    const { appliedFilters, allConversations } = state;
+    const hasAppliedFilters = !!appliedFilters.length;
+    const isInCurrentList = allConversations.some(c => c.id === conversation.id);
+
+    // Don't insert conversations into filtered views (folders or applied filters)
+    // if they are not already part of the current list.
+    // This mirrors the same guard in addConversation.
+    if (!isInCurrentList && (hasAppliedFilters || isOnFoldersView(rootState))) {
+      return;
+    }
+
     commit(types.UPDATE_CONVERSATION, conversation);
 
     dispatch('conversationLabels/setConversationLabel', {

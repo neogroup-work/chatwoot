@@ -142,13 +142,13 @@ es:
         error_code: 'Código de error: %{error_code}'
     activity:
       status:
-        resolved: 'La conversación fue marcada por %{user_name}'
+        resolved: 'La conversación fue resuelta por %{user_name}'
         contact_resolved: 'Conversación fue resuelta por %{contact_name}'
         open: 'La conversación fue reabierta por %{user_name}'
         pending: 'La conversación fue marcada como pendiente por %{user_name}'
         snoozed: 'La conversación fue pospuesta por %{user_name}'
-        auto_resolved: 'La conversación fue marcada por el sistema debido a %{duration} días de inactividad'
-        system_auto_open: El sistema reabrió la conversación debido a un nuevo mensaje entrante.
+        auto_resolved: 'La conversación fue resuelta por el sistema debido a %{duration} días de inactividad'
+        system_auto_open: 'El sistema reabrió la conversación debido a un nuevo mensaje entrante.'
       priority:
         added: '%{user_name} estableció la prioridad a %{new_priority}'
         updated: '%{user_name} cambió la prioridad de %{old_priority} a %{new_priority}'

@@ -285,7 +285,20 @@ export default {
       class="px-0 py-3 border-b group-hover:border-transparent flex-1 border-n-slate-3 w-[calc(100%-40px)]"
     >
       <div class="flex justify-between conversation-card--meta">
-        <InboxName v-if="showInboxName" :inbox="inbox" />
+        <div class="flex items-center gap-1.5 min-w-0">
+          <InboxName v-if="showInboxName" :inbox="inbox" />
+          <span
+            class="inline-flex items-center px-1.5 py-0.5 rounded text-xxs font-medium flex-shrink-0"
+            :class="{
+              'bg-n-teal-3 text-n-teal-11': chat.status === 'open',
+              'bg-n-slate-3 text-n-slate-11': chat.status === 'resolved',
+              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': chat.status === 'pending',
+              'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300': chat.status === 'snoozed',
+            }"
+          >
+            {{ $t(`CHAT_LIST.CHAT_STATUS_FILTER_ITEMS.${chat.status}.TEXT`) }}
+          </span>
+        </div>
         <div class="flex gap-2 ml-2 rtl:mr-2 rtl:ml-0">
           <span
             v-if="showAssignee && assignee.name"

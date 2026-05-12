@@ -8,6 +8,7 @@ import {
   isOnMentionsView,
   isOnUnattendedView,
   isOnFoldersView,
+  conversationMatchesFilters,
 } from './helpers/actionHelpers';
 import messageReadActions from './actions/messageReadActions';
 import messageTranslateActions from './actions/messageTranslateActions';
@@ -365,14 +366,26 @@ const actions = {
       meta: { sender },
     } = conversation;
     const { appliedFilters, allConversations } = state;
-    const hasAppliedFilters = !!appliedFilters.length;
     const isInCurrentList = allConversations.some(c => c.id === conversation.id);
 
-    // Don't insert conversations into filtered views (folders or applied filters)
-    // if they are not already part of the current list.
-    // This mirrors the same guard in addConversation.
-    if (!isInCurrentList && (hasAppliedFilters || isOnFoldersView(rootState))) {
-      return;
+    const hasAppliedFilters = !!appliedFilters.length;
+    const onFolderView = isOnFoldersView(rootState);
+
+    if (hasAppliedFilters || onFolderView) {
+      const filterPayload = onFolderView
+        ? rootState.customViews?.activeConversationFolder?.query?.payload
+        : appliedFilters;
+
+      const matches = conversationMatchesFilters(conversation, filterPayload);
+
+      if (!matches) {
+        if (isInCurrentList) {
+          // Was in the list but no longer meets the criteria → remove it
+          commit(types.REMOVE_CONVERSATION, conversation.id);
+        }
+        // Not in the list and doesn't match → don't add it
+        return;
+      }
     }
 
     commit(types.UPDATE_CONVERSATION, conversation);

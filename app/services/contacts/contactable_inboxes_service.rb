@@ -3,7 +3,22 @@ class Contacts::ContactableInboxesService
 
   def get
     account = contact.account
-    account.inboxes.filter_map { |inbox| get_contactable_inbox(inbox) }
+    inboxes = account.inboxes.includes(:channel)
+
+    # Batch-load all contact_inboxes for this contact in a single query
+    # instead of one query per inbox (avoids N+1 in website and api inbox methods)
+    @contact_inboxes_by_inbox_id = ContactInbox
+      .where(contact: contact, inbox_id: inboxes.map(&:id))
+      .order(:id)
+      .group_by(&:inbox_id)
+      .transform_values(&:last)
+
+    # Batch-load which contact_inboxes already have conversations (for website inboxes)
+    ci_ids = @contact_inboxes_by_inbox_id.values.map(&:id)
+    @contact_inbox_ids_with_conversations = ci_ids.empty? ? Set.new :
+      Set.new(Conversation.where(contact_inbox_id: ci_ids).distinct.pluck(:contact_inbox_id))
+
+    inboxes.filter_map { |inbox| get_contactable_inbox(inbox) }
   end
 
   private
@@ -26,16 +41,16 @@ class Contacts::ContactableInboxesService
   end
 
   def website_contactable_inbox(inbox)
-    latest_contact_inbox = inbox.contact_inboxes.where(contact: @contact).last
+    latest_contact_inbox = @contact_inboxes_by_inbox_id[inbox.id]
     return unless latest_contact_inbox
     # FIXME : change this when multiple conversations comes in
-    return if latest_contact_inbox.conversations.present?
+    return if @contact_inbox_ids_with_conversations.include?(latest_contact_inbox.id)
 
     { source_id: latest_contact_inbox.source_id, inbox: inbox }
   end
 
   def api_contactable_inbox(inbox)
-    latest_contact_inbox = inbox.contact_inboxes.where(contact: @contact).last
+    latest_contact_inbox = @contact_inboxes_by_inbox_id[inbox.id]
     source_id = latest_contact_inbox&.source_id || SecureRandom.uuid
 
     { source_id: source_id, inbox: inbox }

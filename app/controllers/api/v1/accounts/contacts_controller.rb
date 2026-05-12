@@ -75,7 +75,14 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def contactable_inboxes
     @all_contactable_inboxes = Contacts::ContactableInboxesService.new(contact: @contact).get
-    @contactable_inboxes = @all_contactable_inboxes.select { |contactable_inbox| policy(contactable_inbox[:inbox]).show? }
+    # Pre-load allowed inbox IDs once to avoid N+1 from policy(inbox).show? which calls
+    # Current.user.assigned_inboxes.include?(record) — a full query per inbox.
+    @contactable_inboxes = if Current.user.is_a?(AgentBot)
+      @all_contactable_inboxes
+    else
+      allowed_inbox_ids = Set.new(Current.user.assigned_inboxes.ids)
+      @all_contactable_inboxes.select { |ci| allowed_inbox_ids.include?(ci[:inbox].id) }
+    end
   end
 
   # TODO : refactor this method into dedicated contacts/custom_attributes controller class and routes

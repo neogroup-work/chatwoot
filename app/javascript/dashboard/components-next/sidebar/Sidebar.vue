@@ -14,6 +14,7 @@ import Button from 'dashboard/components-next/button/Button.vue';
 import SidebarGroup from './SidebarGroup.vue';
 import SidebarProfileMenu from './SidebarProfileMenu.vue';
 import ChannelLeaf from './ChannelLeaf.vue';
+import FolderLeaf from './FolderLeaf.vue';
 import SidebarAccountSwitcher from './SidebarAccountSwitcher.vue';
 import Logo from 'next/icon/Logo.vue';
 import ComposeConversation from 'dashboard/components-next/NewConversation/ComposeConversation.vue';
@@ -75,6 +76,7 @@ const contactCustomViews = useMapGetter('customViews/getContactCustomViews');
 const conversationCustomViews = useMapGetter(
   'customViews/getConversationCustomViews'
 );
+const folderCounts = useMapGetter('customViews/getFolderCounts');
 
 onMounted(() => {
   store.dispatch('labels/get');
@@ -187,6 +189,12 @@ const menuItems = computed(() => {
             name: `${view.name}-${view.id}`,
             label: view.name,
             to: accountScopedRoute('folder_conversations', { id: view.id }),
+            component: leafProps =>
+              h(FolderLeaf, {
+                label: leafProps.label,
+                active: leafProps.active,
+                count: folderCounts.value[view.id] ?? null,
+              }),
           })),
         },
         {

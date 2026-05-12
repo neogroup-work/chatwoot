@@ -56,7 +56,7 @@ const actions = {
     }
   },
 
-  fetchFilteredConversations: async ({ commit, dispatch }, params) => {
+  fetchFilteredConversations: async ({ commit, dispatch, rootState }, params) => {
     commit(types.SET_LIST_LOADING_STATUS);
     try {
       const { data } = await ConversationApi.filter(params);
@@ -66,6 +66,15 @@ const actions = {
         data,
         'appliedFilters'
       );
+      // Cache conversation count for the active folder so the sidebar badge
+      // can display it without any extra API request (lazy-populated on first visit).
+      const activeFolder = rootState.customViews?.activeConversationFolder;
+      if (activeFolder) {
+        const allCount = data?.meta?.all_count;
+        if (allCount !== undefined) {
+          dispatch('customViews/setFolderCount', { id: activeFolder.id, count: allCount }, { root: true });
+        }
+      }
     } catch (error) {
       // Handle error
     }

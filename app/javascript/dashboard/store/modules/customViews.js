@@ -28,6 +28,9 @@ export const state = {
     isDeleting: false,
   },
   activeConversationFolder: null,
+  // Cached conversation counts per folder id, populated lazily on first visit.
+  // Key: folder.id (number), Value: all_count (number)
+  folderCounts: {},
 };
 
 export const getters = {
@@ -46,6 +49,9 @@ export const getters = {
   },
   getActiveConversationFolder(_state) {
     return _state.activeConversationFolder;
+  },
+  getFolderCounts(_state) {
+    return _state.folderCounts;
   },
 };
 
@@ -107,6 +113,9 @@ export const actions = {
   setActiveConversationFolder({ commit }, data) {
     commit(types.SET_ACTIVE_CONVERSATION_FOLDER, data);
   },
+  setFolderCount({ commit }, { id, count }) {
+    commit('SET_FOLDER_COUNT', { id, count });
+  },
 };
 
 export const mutations = {
@@ -132,6 +141,9 @@ export const mutations = {
 
   [types.SET_ACTIVE_CONVERSATION_FOLDER](_state, folder) {
     _state.activeConversationFolder = folder;
+  },
+  SET_FOLDER_COUNT(_state, { id, count }) {
+    _state.folderCounts = { ..._state.folderCounts, [id]: count };
   },
 };
 

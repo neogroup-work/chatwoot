@@ -150,6 +150,38 @@ describe ActionCableListener do
 
       listener.notification_deleted(event)
     end
+
+    context 'with serialized notification payload' do
+      let!(:event) do
+        Events::Base.new(
+          event_name,
+          Time.zone.now,
+          notification: {
+            id: notification.id,
+            user_id: notification.user_id,
+            account_id: notification.account_id,
+            user_pubsub_token: agent.pubsub_token
+          }
+        )
+      end
+
+      it 'sends message to the notification user token' do
+        expect(ActionCableBroadcastJob).to receive(:perform_later).with(
+          [agent.pubsub_token],
+          'notification.deleted',
+          {
+            account_id: notification.account_id,
+            notification: {
+              id: notification.id
+            },
+            unread_count: 1,
+            count: 1
+          }
+        )
+
+        listener.notification_deleted(event)
+      end
+    end
   end
 
   describe '#notification_updated' do

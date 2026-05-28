@@ -8,6 +8,20 @@ class BaseListener
 
   def extract_notification_and_account(event)
     notification = event.data[:notification]
+    if notification.is_a?(Hash)
+      user_id = notification[:user_id] || notification['user_id']
+      account_id = notification[:account_id] || notification['account_id']
+
+      user = User.find_by(id: user_id)
+      account = Account.find_by(id: account_id)
+      return [notification, account, 0, 0] if user.blank? || account.blank?
+
+      notification_finder = NotificationFinder.new(user, account)
+      unread_count = notification_finder.unread_count
+      count = notification_finder.count
+      return [notification, account, unread_count, count]
+    end
+
     notification_finder = NotificationFinder.new(notification.user, notification.account)
     unread_count = notification_finder.unread_count
     count = notification_finder.count
